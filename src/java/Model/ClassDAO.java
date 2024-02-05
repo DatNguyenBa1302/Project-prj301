@@ -19,7 +19,7 @@ import utils.DBUtils;
  */
 public class ClassDAO {
    
-    public ArrayList<ClassDTO> list(String keyWord){
+    public ArrayList<ClassDTO> listClass(String keyWord){
         ArrayList<ClassDTO> list = null;
         
         try {
@@ -52,5 +52,28 @@ public class ClassDAO {
         }
         
         return list;
+    }
+    
+    public int createClass (String class_name, String class_description, String class_password, String lecturer_id){
+        int nRow = 0;
+        try {
+            Connection con = DBUtils.getConnection();
+            String sql = "INSERT INTO Classes(name, description, password,lecturer_id) VALUES (?,?,?,?)";
+            
+            PreparedStatement stmt = con.prepareStatement(sql);
+            
+            stmt.setString(1, class_name);
+            stmt.setString(2, class_description);
+            stmt.setString(3, class_password);
+            stmt.setString(4, lecturer_id);
+            
+            nRow = stmt.executeUpdate();
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("Wrong statement");
+            e.printStackTrace();
+        }
+        
+        return nRow;
     }
 }

@@ -4,9 +4,17 @@
         <servlet-name>Searching</servlet-name>
         <servlet-class>Controller.Searching</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CreateClass</servlet-name>
+        <servlet-class>Controller.CreateClass</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Searching</servlet-name>
         <url-pattern>/searching</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateClass</servlet-name>
+        <url-pattern>/createclass</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

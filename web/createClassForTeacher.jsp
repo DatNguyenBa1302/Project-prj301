@@ -118,14 +118,15 @@
                         <h6 class="card-subtitle mb-2 text-body-secondary fs-5 mb-3">Cung cấp cho các thành viên trong
                             lớp
                             quyền truy cập các hoạt động chất lượng nhất của ứng dụng.</h6>
-                        <form action="">
+                        <form action="createclass">
                             <label class="form-label fs-5 fw-medium">Ten lop hoc</label>
-                            <input type="text" class="form-control" placeholder="Nhap ten cua lop hoc">
+                            <input type="text" class="form-control" placeholder="Nhap ten cua lop hoc" name = "class_name">
                             <label class="form-label fs-5 fw-medium">Mo ta</label>
                             <textarea class="form-control" rows="3"
-                                placeholder="Them mo ta cho lop hoc cua ban"></textarea>
+                                placeholder="Them mo ta cho lop hoc cua ban" name = "class_description"></textarea>
                             <label class="form-label fs-5 fw-medium">Mat khau</label>
-                            <input type="password" class="form-control" placeholder="Nhap mat khau cho lop hoc">
+                            <input type="password" class="form-control" placeholder="Nhap mat khau cho lop hoc" name = "class_password">
+                            <input type="hidden" value="1" name="lecture_id">
                             <input class="btn btn-primary my-3" type="submit" value="Luu lop hoc">
                         </form>
                     </div>

@@ -155,7 +155,7 @@
 
                             ClassDAO classdao = new ClassDAO();
                             String keyWord = "";
-                            ArrayList<ClassDTO> list = classdao.list(keyWord);
+                            ArrayList<ClassDTO> list = classdao.listClass(keyWord);
                             int count = 0;
                             for (ClassDTO Class : list) {
                                 if (count == 3) {
@@ -168,8 +168,8 @@
                             <img src="./img/slide.jpg" class="card-img-top object-fit-cover rounded-top-4" alt="..."
                                  style="max-height: 10rem;">
                             <div class="card-body">
-                                <h5 class="card-title"> < Class.getClass_name() --> </h5>
-                                <p class="card-text"> <!-- Class.getClass_description()--></p>
+                                <h5 class="card-title"> <%= Class.getClass_name() %> </h5>
+                                <p class="card-text"> <%= Class.getClass_description() %></p>
                             </div>
                         </a>
 
@@ -181,39 +181,6 @@
                         } catch (Exception e) {
                         }
                     %>             
-                    <!--                <div class="col-lg-4">
-                                        <a href="#" class="card rounded-4 text-decoration-none">
-                                            <img src="./img/slide.jpg" class="card-img-top object-fit-cover rounded-top-4" alt="..."
-                                                style="max-height: 10rem;">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Ten lop hoc</h5>
-                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in
-                                                    to additional content. This content is a little bit longer.</p>
-                                            </div>
-                                        </a>
-                                    </div>  
-                                    <div class="col-lg-4">
-                                        <a href="#" class="card rounded-4 text-decoration-none">
-                                            <img src="./img/slide.jpg" class="card-img-top object-fit-cover rounded-top-4" alt="..."
-                                                style="max-height: 10rem;">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Ten lop hoc</h5>
-                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in
-                                                    to additional content. This content is a little bit longer.</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <a href="#" class="card rounded-4 text-decoration-none">
-                                            <img src="./img/slide.jpg" class="card-img-top object-fit-cover rounded-top-4" alt="..."
-                                                style="max-height: 10rem;">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Ten lop hoc</h5>
-                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in
-                                                    to additional content. This content is a little bit longer.</p>
-                                            </div>
-                                        </a>
-                                    </div>-->
 
                 </div>
 
@@ -224,7 +191,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <a href="#" class="card text-decoration-none">
+                        <a href="sceenClassForStudent.jsp" class="card text-decoration-none">
                             <div class="card-body">
                                 <h5 class="card-title">Ten lop hoc</h5>
                                 <p class="card-text">Fpt, VietNam</p>
