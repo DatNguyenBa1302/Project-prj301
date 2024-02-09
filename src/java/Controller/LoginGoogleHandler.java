@@ -5,19 +5,27 @@
  */
 package Controller;
 
+import Model.UserGoogleDAO;
+import Model.UserGoogleDTO;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
 import utils.Constants;
+import utils.DBUtils;
 import utils.GoogleUtils;
 
 /**
@@ -47,6 +55,7 @@ public class LoginGoogleHandler extends HttpServlet {
             out.println("<title>Servlet LoginGoogleHandler</title>");
             out.println("</head>");
             out.println("<body>");
+
             out.println("<h1>Servlet LoginGoogleHandler at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
@@ -65,23 +74,27 @@ public class LoginGoogleHandler extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String code = request.getParameter("code");
+        String msg = "Login Failed please use @FPT gmail";
+        HttpSession session = request.getSession();
 
-        try (PrintWriter out = response.getWriter()) {
-            String accessToken = GoogleUtils.getToken(code);
-            UserGoogleDto user = GoogleUtils.getUserInfo(accessToken);
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LoginGoogleHandler</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>User Data :"+user.getEmail()+"</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String accessToken = GoogleUtils.getToken(code);
+        UserGoogleDTO user = GoogleUtils.getUserInfo(accessToken);
+        if (user != null) {
+            UserGoogleDTO userLogin = UserGoogleDAO.login(user);
+            if (userLogin != null) {
+                msg = "Welcome back " + userLogin.getName();
+                session.setAttribute("user", userLogin);
+                session.setAttribute("role", "student");
+                request.setAttribute("msg", msg);
+                response.sendRedirect("home");
+            }
+        } else {
+            request.setAttribute("msg", msg);
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
-        
+
     }
 
     /**

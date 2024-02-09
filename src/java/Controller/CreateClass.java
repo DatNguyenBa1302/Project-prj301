@@ -5,18 +5,32 @@
  */
 package Controller;
 
-import Model.ClassDAO;
+import Model.ClassesDAO;
+import Model.LectureDTO;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 /**
  *
- * @author User
+ * @author ACER
  */
+@MultipartConfig
+@WebServlet(name = "CreateClass", urlPatterns = {"/create-class"})
 public class CreateClass extends HttpServlet {
 
     /**
@@ -33,30 +47,15 @@ public class CreateClass extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-//            out.println("<!DOCTYPE html>");
-//            out.println("<html>");
-//            out.println("<head>");
-//            out.println("<title>Servlet CreateClass</title>");            
-//            out.println("</head>");
-//            out.println("<body>");
-//            out.println("<h1>Servlet CreateClass at " + request.getContextPath() + "</h1>");
-//            out.println("</body>");
-//            out.println("</html>");
-            String lecture_id = request.getParameter("lecture_id");
-            String class_name = request.getParameter("class_name");
-            String class_description = request.getParameter("class_description");
-            String class_password = request.getParameter("class_password");
-            
-            int nRow = 0;
-            ClassDAO classdao = new ClassDAO();
-            if(class_name!=null&&class_description!=null&&class_password!=null){
-                nRow = classdao.createClass(class_name, class_description, class_password, lecture_id);
-            }
-            if(nRow>0){
-                request.getRequestDispatcher("sceenHomeTeacher.jsp").forward(request, response);
-            }else {
-                response.sendRedirect("createClassForTeacher.jsp");
-            }
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet CreateClass</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet CreateClass at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 
@@ -86,7 +85,51 @@ public class CreateClass extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.setCharacterEncoding("UTF-8");
+        String name, imageUrl, password, description;
+        HttpSession session = request.getSession();
+        LectureDTO user = (LectureDTO) session.getAttribute("user");
+        int lecturer_id = user.getId();
+
+        name = request.getParameter("className");
+        System.out.println("Class name: " + name);
+        Part filePart = request.getPart("thumbnail");
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString().trim();
+        password = request.getParameter("password");
+        description = request.getParameter("description");
+
+        fileName = fileName.replaceAll("\\s", "_");
+        imageUrl = "http://localhost:8080/LoginGoogle/files/" + fileName;
+        String uploadPath = "C:\\Users\\User\\Desktop\\Project prj301\\web\\Assets" + File.separator + "img";
+// Tạo đường dẫn đầy đủ đến file trong thư mục "Assets/img/"
+        String filePath = uploadPath + File.separator + fileName;
+
+        ClassesDAO classDAO = new ClassesDAO();
+        InputStream input = filePart.getInputStream();
+
+        try {
+            // Tạo thư mục nếu nó chưa tồn tại
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            // Chuyển file vào thư mục "Assets/img/"
+            Files.copy(input, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            System.err.println("Error writing file to disk: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            input.close();
+        }
+
+        if (classDAO.addClass(name, imageUrl, password, description, lecturer_id)) {
+            request.setAttribute("message", "Create Successfully !!!");
+        } else {
+            request.setAttribute("message", "Failed !!!");
+        }
+
+        response.sendRedirect("MyCourse.jsp");
     }
 
     /**
